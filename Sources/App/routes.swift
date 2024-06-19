@@ -28,4 +28,12 @@ func routes(_ app: Application) throws {
         }
         return "\(x) + \(y) = \(x + y)"
     }
+
+    app.get("movies") { req async in
+        [
+            Movie(title: "Batman", year: 2022),
+            Movie(title: "Superman", year: 2021),
+            Movie(title: "Spiderman", year: 2023)
+        ]
+    }
 }
