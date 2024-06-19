@@ -41,4 +41,9 @@ func routes(_ app: Application) throws {
         let movie = try req.content.decode(Movie.self)
         return movie
     }
+
+    app.get("hotels") { req async throws in
+        let query = try req.query.decode(HotelQuery.self)
+        return query
+    }
 }
