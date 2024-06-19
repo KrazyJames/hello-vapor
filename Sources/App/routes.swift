@@ -1,49 +1,23 @@
 import Vapor
 
 func routes(_ app: Application) throws {
-    app.get { req async in
-        "It works!"
+    let movies = app.grouped("movies")
+    let users = app.grouped("users")
+
+    // MARK: - Movies
+    movies.get { req async in
+        [Movie(title: "Batman", year: 2021)]
     }
 
-    app.get("hello") { req async -> String in
-        "Hello, world!"
-    }
-
-    // Dynamic route parameters
-    app.get("hello", ":name") { req async throws -> String in
-        guard let name = req.parameters.get("name") else {
+    movies.get(":id") { req async throws in
+        guard let id = req.parameters.get("id", as: Int.self) else {
             throw Abort(.badRequest)
         }
-        return "Hello, \(name)!"
+        return Movie(title: "Superman \(id)", year: 2020)
     }
 
-    // Multiple parameters
-    app.get("sum", ":x", ":y") { req async throws -> String in
-        // Strong typed route parameters (casting)
-        guard let x = req.parameters.get("x", as: Int.self) else {
-            throw Abort(.badRequest)
-        }
-        guard let y = req.parameters.get("y", as: Int.self) else {
-            throw Abort(.badRequest)
-        }
-        return "\(x) + \(y) = \(x + y)"
-    }
-
-    app.get("movies") { req async in
-        [
-            Movie(title: "Batman", year: 2022),
-            Movie(title: "Superman", year: 2021),
-            Movie(title: "Spiderman", year: 2023)
-        ]
-    }
-
-    app.post("movies") { req async throws in
-        let movie = try req.content.decode(Movie.self)
-        return movie
-    }
-
-    app.get("hotels") { req async throws in
-        let query = try req.query.decode(HotelQuery.self)
-        return query
+    // MARK: - Users
+    users.get("premium") { req async throws in
+        return "Premium"
     }
 }
